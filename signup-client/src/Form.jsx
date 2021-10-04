@@ -1,11 +1,13 @@
 import React from 'react';
+import { useHistory } from 'react-router';
 import { SignUpUser } from './apiCalls';
 
 const Form = () => {
-    
+    const history = useHistory();
 
     const submitHandler = async (e) => {
         e.preventDefault();
+        
         const userData = {
             username: e.target.username.value,
             email: e.target.email.value,
@@ -13,9 +15,10 @@ const Form = () => {
         };
         
         const result = await SignUpUser( userData );
-        // if(!result.error) {
-        //     history.push("/users");
-        // }
+
+        if(!result.error) {
+            history.push("/users");
+        }
     };
 
     return (
