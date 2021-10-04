@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import cors from "cors";
+import User from './User.js';
 // --------------------------------------------------
 
 
@@ -39,7 +40,25 @@ app.get("/", (req, res) => {
     res.send("<h1>Welcome to the Simple-Signup API</h1>");
 });
 
+app.get("/users", async (req,res, next) => {
+    try {
+        const users = await User.find();
+        res.json( users );
+    } catch (error) {
+        next( error );
+    }
+});
 
+app.post("/signup", async (req, res, next) => {
+    try {
+        const body = req.body;
+        const user = await User.create(body);
+
+        res.send( user );
+    } catch (error) {
+        next( error );
+    }
+});
 // --------------------------------------------------
 
 
@@ -47,3 +66,15 @@ const port = 5000;
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
+
+
+app.use(
+    function errorHandler (err, req, res, next) {
+        res.status(err.status || 400).send({
+            error: {
+                message: err.message,
+                status: err.status
+            }
+        });
+    }
+);
