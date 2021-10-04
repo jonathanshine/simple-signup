@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router';
 import { SignUpUser } from './apiCalls';
 
 const Form = () => {
     const history = useHistory();
+    const [image, setImage] = useState();
+    const fileInputRef = useRef();
+
+    const imageHandler = (e) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (reader.readyState === 2) {
+                setImage(reader.result);
+            }
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    };
 
     const submitHandler = async (e) => {
         e.preventDefault();
@@ -11,7 +23,7 @@ const Form = () => {
         const userData = {
             username: e.target.username.value,
             email: e.target.email.value,
-            password: e.target.password.value,
+            password: e.target.password.value
         };
         
         const result = await SignUpUser( userData );
@@ -24,8 +36,9 @@ const Form = () => {
     return (
         <form onSubmit={submitHandler}>
             <label htmlFor="avatar">
-                <img style={{cursor: "pointer"}} src="https://i.pravatar.cc/200" alt="random avatar" />
-                <input style={{display: "none"}} type="file" name="avatar" id="avatar" accept="image/*"/>
+                Add Own Image
+                <img style={{cursor: "pointer", objectFit: "cover"}} src={image ? image : "https://i.pravatar.cc/200"} alt="random avatar"/>
+                <input style={{display: "none"}} type="file" name="avatar" id="avatar" accept="image/*" ref={fileInputRef} onChange={(e) => imageHandler(e)}/>
             </label>
 
             <label htmlFor="username">
