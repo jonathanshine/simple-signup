@@ -14,3 +14,12 @@ export const SignUpUser = async (data) => {
         return error;
     };
 };
+
+export const getAllUsers = async () => {
+    try {
+        const data = await( await fetch(`${serverURL}/users`)).json();
+        return data;
+    } catch (error) {
+        return error;
+    };
+};

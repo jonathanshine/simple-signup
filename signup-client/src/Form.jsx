@@ -1,5 +1,5 @@
-import React from 'react'
-import { SignUpUser } from './apiCalls'
+import React from 'react';
+import { SignUpUser } from './apiCalls';
 
 const Form = () => {
     
@@ -11,11 +11,7 @@ const Form = () => {
             email: e.target.email.value,
             password: e.target.password.value,
         };
-        // const userSignUpData = new FormData(e.target);
-        // userSignUpData.set("username", userSignUpData.get("username"));
-        // userSignUpData.set("email", userSignUpData.get("email"));
-        // userSignUpData.set("password", userSignUpData.get("password"));
-        // console.log(userSignUpData.values);
+        
         const result = await SignUpUser( userData );
         // if(!result.error) {
         //     history.push("/users");
