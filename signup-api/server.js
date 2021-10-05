@@ -3,6 +3,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from "dotenv";
 import cors from "cors";
+import { v2 as cloudinary } from 'cloudinary';
 import User from './User.js';
 // --------------------------------------------------
 
@@ -11,6 +12,12 @@ import User from './User.js';
 const app = express();
 
 dotenv.config();
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET
+});
 // --------------------------------------------------
 
 
@@ -29,7 +36,7 @@ mongoose.connect(MONGO_URI, {
 
 
 // MIDDLEWARE ---------------------------------------
-app.use( express.json() );
+app.use( express.json({ limit: "1MB" }) );
 
 app.use( cors() );
 // --------------------------------------------------
@@ -51,10 +58,11 @@ app.get("/users", async (req,res, next) => {
 
 app.post("/signup", async (req, res, next) => {
     try {
-        const body = req.body;
-        const user = await User.create(body);
-
-        res.send( user );
+        const { imageURL, ...userData } = req.body;
+        const result = await cloudinary.uploader.upload( imageURL );
+        const newUser = await User.create({ ...userData, imageURL: result.secure_url });
+    
+        res.json( newUser );
     } catch (error) {
         next( error );
     }

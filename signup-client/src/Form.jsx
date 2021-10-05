@@ -23,7 +23,8 @@ const Form = () => {
         const userData = {
             username: e.target.username.value,
             email: e.target.email.value,
-            password: e.target.password.value
+            password: e.target.password.value,
+            imageURL: image
         };
         
         const result = await SignUpUser( userData );
